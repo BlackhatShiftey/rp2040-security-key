@@ -11,6 +11,7 @@
       "allowed_status_paths": [
         "pico-keys-sdk",
         "src/fido/cbor.c",
+        "src/fido/cbor_get_info.c",
         "src/fido/cbor_make_credential.c"
       ]
     },
@@ -123,6 +124,15 @@
       "before_sha256": "abd88c636255772956634afbe0e7329e158308317e43617842e11b3bb0e20108",
       "after_sha256": "e63a6d0f6b41d29f64ae34047798d5446838d241c25b91ee59c1739490f91b43",
       "patch_sha256": "137371b3c0f7a5e56299367f71e469fce766e4edd01a3757df40832ad0605c9b"
+    },
+    {
+      "order": 6,
+      "repo": "pico-fido",
+      "patch": "patches/0006-report-usb-transport.patch",
+      "target": "src/fido/cbor_get_info.c",
+      "before_sha256": "2a20c8be0b3ee799b8d99cd2463a5356277381a8666718739354c710be605941",
+      "after_sha256": "2cfe1ebfd3f35158fdb3ae23de1ca501f1af5110b6ac837a9890e32ff03bedd8",
+      "patch_sha256": "88932c0a2a5859df25cb134f2ed6417f42b86e65432df1ff2a508309579a929f"
     }
   ],
   "build": {

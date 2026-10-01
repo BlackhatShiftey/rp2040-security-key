@@ -76,8 +76,8 @@ def load_lock(path: Path) -> dict[str, Any]:
     patches = payload.get("patches")
     if not isinstance(repositories, list) or len(repositories) != 7:
         raise BootstrapError("source lock must contain exactly seven repositories")
-    if not isinstance(patches, list) or len(patches) != 5:
-        raise BootstrapError("source lock must contain exactly five patches")
+    if not isinstance(patches, list) or len(patches) != 6:
+        raise BootstrapError("source lock must contain exactly six patches")
     ids = [item.get("id") for item in repositories if isinstance(item, dict)]
     if len(ids) != len(set(ids)) or len(ids) != 7:
         raise BootstrapError("source lock repository identifiers are invalid")

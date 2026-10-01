@@ -14,7 +14,7 @@ for the AGPL-3.0 terms.
 
 - **Supported target:** Waveshare-compatible RP2040-Zero with 2 MiB flash.
 - **Firmware base:** Pico FIDO v8.0 at pinned source revisions.
-- **Delivered here:** five source patches, deterministic source bootstrap, a
+- **Delivered here:** six source patches, deterministic source bootstrap, a
   portable build helper, offline regression tests, and host-side qualification tools.
 - **Future work:** a broader multi-board Canticle Key SDK is planned, but it is not
   implemented in this release. See [docs/SDK_ROADMAP.md](docs/SDK_ROADMAP.md).
@@ -58,7 +58,7 @@ bash scripts/build_firmware.sh
 ```
 
 The bootstrap helper clones and validates the seven repositories pinned in
-`sources.lock.json`, then applies `patches/0001` through `0005`. The build helper
+`sources.lock.json`, then applies `patches/0001` through `0006`. The build helper
 uses fixed RP2040-Zero settings and writes:
 
 ```text
@@ -106,16 +106,18 @@ must never contain a PIN, private credential key, account identifier, or recover
 
 ## Qualification evidence
 
-The qualification suite contained 12 offline regression tests. The current public
-checkout adds three source-bootstrap tests and passes 15/15 offline tests. A private
-build from the same pinned source and patch set also passed the defined RP2040-Zero hardware suite,
+The historical qualification suite contained 12 offline regression tests. The current
+public checkout adds five source-bootstrap tests and one GetInfo transport regression,
+and passes 18/18 offline tests. A private build using patches `0001` through `0005`
+also passed the defined RP2040-Zero hardware suite,
 including late touch, no-touch denial, signature verification, RP separation,
 physical reconnect persistence, PIN/UV-required resident credentials, and flash
 readback. The sanitized evidence boundary is in
 [docs/QUALIFICATION.md](docs/QUALIFICATION.md).
 
-That result applies to the exact private image tested. It does not qualify a newly
-built public preview binary by association.
+That result applies to the exact private image tested. It does not qualify patch `0006`
+or a newly built public preview binary by association, and it does not establish browser
+or service acceptance.
 
 ## Repository layout
 

@@ -50,3 +50,6 @@ CMakeCache.txt
 evidence/
 /QUALIFICATION.md
 *.log
+
+# Operator-local session handoff notes.
+/HANDOFF.md

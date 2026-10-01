@@ -14,9 +14,10 @@ The hardware run used a private local build with SHA-256:
 ```
 
 It was built for a Waveshare-compatible RP2040-Zero from the pinned sources and
-patches documented in [../BUILD.md](../BUILD.md). The image is not published because
-it contains machine-specific absolute build paths. The same source and patch set is
-public; users can build a clean preview with the supplied helpers.
+the first five patches documented in [../BUILD.md](../BUILD.md). The image is not
+published because it contains machine-specific absolute build paths. That source and
+patch set remains public; the current preview additionally applies patch `0006` to
+report the USB transport.
 
 ## Results
 
@@ -38,9 +39,11 @@ public; users can build a clean preview with the supplied helpers.
 | Protected request without PIN authorization rejected; retry count unchanged | PASS |
 | Offline regression suite | PASS, 12/12 tests |
 
-The offline suite covers the actual patched button-wait control flow, no-PIN presence
-placement, cancellation behavior, public-record encoding, PIN validation, permission
-scoping, signature rejection, readiness gates, and resident-credential properties.
+The historical offline suite covers the actual patched button-wait control flow, no-PIN
+presence placement, cancellation behavior, public-record encoding, PIN validation,
+permission scoping, signature rejection, readiness gates, and resident-credential
+properties. The current public suite also checks the GetInfo USB transport source change;
+that additional patch was not present in the hardware-tested private image.
 
 ## Public build status
 
@@ -49,7 +52,9 @@ scoping, signature rejection, readiness gates, and resident-credential propertie
 is source-qualified by the offline tests only. It was not the binary used in the private
 hardware run and has not been independently flashed, read back, or exercised on a board.
 Build paths and toolchain details can change UF2 bytes, so the private result must not be
-transferred to a new digest by assumption.
+transferred to a new digest by assumption. Source and build qualification of the USB
+transport response does not prove that a browser or service will classify or accept the
+authenticator as a hardware security key.
 
 ## What this does not prove
 

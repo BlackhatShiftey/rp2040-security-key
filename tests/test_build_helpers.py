@@ -27,7 +27,7 @@ class BuildHelperTest(unittest.TestCase):
     def test_lock_has_exact_pins_and_patch_digests(self) -> None:
         lock = bootstrap_sources.load_lock(PROJECT_ROOT / "sources.lock.json")
         self.assertEqual(len(lock["repositories"]), 7)
-        self.assertEqual(len(lock["patches"]), 5)
+        self.assertEqual(len(lock["patches"]), 6)
         for patch in lock["patches"]:
             patch_path = PROJECT_ROOT / patch["patch"]
             self.assertEqual(bootstrap_sources.sha256_file(patch_path), patch["patch_sha256"])

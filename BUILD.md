@@ -47,11 +47,13 @@ The bootstrap applies these patches in order:
 3. `0003-sdk-preserve-cancelled-transaction.patch`
 4. `0004-sdk-complete-button-cancel-lifecycle.patch`
 5. `0005-sdk-measure-release-timeout-from-press.patch`
+6. `0006-report-usb-transport.patch`
 
 They add the missing no-PIN presence gate, correct cancellation cleanup across the
-FIDO and USB layers, and measure the button-release timeout from the detected press.
-The last change preserves a full release interval for a valid press late in the
-configured presence window.
+FIDO and USB layers, measure the button-release timeout from the detected press, and
+report the physical authenticator's CTAP transport as exactly `usb`. The timeout change
+preserves a full release interval for a valid press late in the configured presence
+window.
 
 ## Fresh build
 
@@ -100,7 +102,7 @@ bash scripts/build_firmware.sh \
 ```
 
 This mode verifies the lock digest, the entire expanded tree, safe internal symlinks,
-dependency markers, and all five post-patch file digests against the manifest. The
+dependency markers, and all six post-patch file digests against the manifest. The
 manifest detects changes relative to the publisher's prepared tree; it does not
 authenticate the publisher. The release archive's separately published SHA-256 or
 signature is the authenticity boundary.
@@ -142,10 +144,11 @@ without comparing the outputs.
 
 ## Offline verification
 
-The public checkout currently runs 15 offline tests: the 12 firmware, presence,
-cancellation, signature, PIN, and persistence regressions used for local qualification,
-plus three fail-closed bootstrap/build-helper tests. CI bootstraps the pinned sources
-and runs this suite on Ubuntu 24.04 without accessing USB devices.
+The public checkout currently runs 18 offline tests: the 12 firmware, presence,
+cancellation, signature, PIN, and persistence regressions used for historical local
+qualification, five fail-closed bootstrap/build-helper tests, and one GetInfo transport
+source regression. CI bootstraps the pinned sources and runs this suite on Ubuntu 24.04
+without accessing USB devices.
 
 ## Provisioning boundary
 

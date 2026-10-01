@@ -22,6 +22,7 @@ PICO_FIDO_SOURCE = Path(
     os.environ.get("PICO_FIDO_SOURCE", PROJECT_ROOT / "vendor/pico-fido")
 ).resolve()
 MAKE_CREDENTIAL_SOURCE = PICO_FIDO_SOURCE / "src/fido/cbor_make_credential.c"
+GET_INFO_SOURCE = PICO_FIDO_SOURCE / "src/fido/cbor_get_info.c"
 
 
 def no_pin_presence_block(source: str) -> str:
@@ -52,6 +53,31 @@ class PresenceSourceRegressionTest(unittest.TestCase):
         self.assertNotIn(
             "else if (!(flags & FIDO2_AUT_FLAG_UP))",
             no_pin_presence_block(pre_fix),
+        )
+
+
+class TransportSourceRegressionTest(unittest.TestCase):
+    def test_get_info_reports_exact_usb_transport_in_canonical_order(self) -> None:
+        source = GET_INFO_SOURCE.read_text(encoding="utf-8")
+        start = source.index("cbor_encode_uint(&mapEncoder, 0x08)")
+        end = source.index("cbor_encode_uint(&mapEncoder, 0x0A)", start)
+        transport_block = source[start:end]
+
+        self.assertIn("uint8_t lfields = 21;", source)
+        self.assertEqual(
+            transport_block.count("cbor_encode_uint(&mapEncoder, 0x09)"), 1
+        )
+        self.assertIn(
+            "cbor_encoder_create_array(&mapEncoder, &arrayEncoder, 1)",
+            transport_block,
+        )
+        self.assertEqual(
+            transport_block.count('cbor_encode_text_stringz(&arrayEncoder, "usb")'),
+            1,
+        )
+        self.assertIn(
+            "cbor_encoder_close_container(&mapEncoder, &arrayEncoder)",
+            transport_block,
         )
 
 
