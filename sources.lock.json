@@ -1,0 +1,136 @@
+{
+  "schema": 1,
+  "repositories": [
+    {
+      "id": "pico-fido",
+      "path": "pico-fido",
+      "slug": "polhenarejos/pico-fido",
+      "url": "https://github.com/polhenarejos/pico-fido.git",
+      "ref": "v8.0",
+      "commit": "6ffcb81191c7f4e44337e0eaecc788ba6db03b75",
+      "allowed_status_paths": [
+        "pico-keys-sdk",
+        "src/fido/cbor.c",
+        "src/fido/cbor_make_credential.c"
+      ]
+    },
+    {
+      "id": "pico-keys-sdk",
+      "path": "pico-fido/pico-keys-sdk",
+      "slug": "polhenarejos/pico-keys-sdk",
+      "url": "https://github.com/polhenarejos/pico-keys-sdk.git",
+      "commit": "7c5f4d9b95d5c17531a45c74c673822242d4d376",
+      "allowed_status_paths": [
+        "src/button.c",
+        "src/usb/hid/hid.c",
+        "src/usb/usb.c",
+        "third-party/mbedtls/",
+        "third-party/tinycbor/"
+      ]
+    },
+    {
+      "id": "pico-sdk",
+      "path": "pico-sdk",
+      "slug": "raspberrypi/pico-sdk",
+      "url": "https://github.com/raspberrypi/pico-sdk.git",
+      "ref": "2.1.1",
+      "commit": "bddd20f928ce76142793bef434d4f75f4af6e433",
+      "allowed_status_paths": []
+    },
+    {
+      "id": "tinyusb",
+      "path": "pico-sdk/lib/tinyusb",
+      "slug": "hathach/tinyusb",
+      "url": "https://github.com/hathach/tinyusb.git",
+      "commit": "86ad6e56c1700e85f1c5678607a762cfe3aa2f47",
+      "allowed_status_paths": []
+    },
+    {
+      "id": "mbedtls",
+      "path": "pico-fido/pico-keys-sdk/third-party/mbedtls",
+      "slug": "Mbed-TLS/mbedtls",
+      "url": "https://github.com/Mbed-TLS/mbedtls.git",
+      "ref": "v3.6.7",
+      "commit": "068ff080b369adfac81509f9b57b2afabaf82dc5",
+      "allowed_status_paths": [
+        ".picokeys_dep_source"
+      ],
+      "marker": "REPO=https://github.com/Mbed-TLS/mbedtls.git\nREF=v3.6.7\n"
+    },
+    {
+      "id": "tinycbor",
+      "path": "pico-fido/pico-keys-sdk/third-party/tinycbor",
+      "slug": "intel/tinycbor",
+      "url": "https://github.com/intel/tinycbor.git",
+      "ref": "v0.6.1",
+      "commit": "c0aad2fb2137a31b9845fbaae3653540c410f215",
+      "allowed_status_paths": [
+        ".picokeys_dep_source"
+      ],
+      "marker": "REPO=https://github.com/intel/tinycbor.git\nREF=v0.6.1\n"
+    },
+    {
+      "id": "picotool",
+      "path": "picotool",
+      "slug": "raspberrypi/picotool",
+      "url": "https://github.com/raspberrypi/picotool.git",
+      "commit": "ba3df406c37774144a059b2bdae73ab52587a1d2",
+      "allowed_status_paths": []
+    }
+  ],
+  "patches": [
+    {
+      "order": 1,
+      "repo": "pico-fido",
+      "patch": "patches/0001-require-touch-without-pin.patch",
+      "target": "src/fido/cbor_make_credential.c",
+      "before_sha256": "3d4f0814dc40e338d912cd80456140afde7c2635651abed4e2a3bbe7d40978fe",
+      "after_sha256": "57fb7d309960322bb33bb97c02ab52cf4ffc0c164faa4091696476e86644fa7f",
+      "patch_sha256": "815aa816ba8269e4ca2fd6e5157e6b160000a9c8fdbb187e0fa43461cfa7d52c"
+    },
+    {
+      "order": 2,
+      "repo": "pico-fido",
+      "patch": "patches/0002-complete-cancellation-after-cleanup.patch",
+      "target": "src/fido/cbor.c",
+      "before_sha256": "3b6312b46765baea0d243661029ed33a95a1bbefa7f5a434c9e6ac4ea0bb4e9d",
+      "after_sha256": "e7865a7033669dec99126b1eb2a701a7e833dd81883593a1c59bad92b896d3c6",
+      "patch_sha256": "ad33cbf087c0186fc0e823e0c7d2e9186f7a64785f79270fd21f6fad1c44602b"
+    },
+    {
+      "order": 3,
+      "repo": "pico-keys-sdk",
+      "patch": "patches/0003-sdk-preserve-cancelled-transaction.patch",
+      "target": "src/usb/hid/hid.c",
+      "before_sha256": "64b25f4563548606957be72721d3e500d974f31365e31fa7afb51856099e22e2",
+      "after_sha256": "bbcc0714f9f7c39559b40a6577de9c0644d946533bb712044bbcbad88ff4239d",
+      "patch_sha256": "e0385974fee7a2e1eed075ee25313854a545ebb42b312a6e70192b781e0c5d8b"
+    },
+    {
+      "order": 4,
+      "repo": "pico-keys-sdk",
+      "patch": "patches/0004-sdk-complete-button-cancel-lifecycle.patch",
+      "target": "src/usb/usb.c",
+      "before_sha256": "52af67e5776a94ff5dd2268809633beb7fb3f777efc390b5ada43a2b5cfa2b86",
+      "after_sha256": "fce06b6ded54def97c4e43322ef3e19db08850b44cf3b3b5aeb2a810b99ea599",
+      "patch_sha256": "3bf6e40ab120720861ec57f85f76300b6c6be76bce510f5b220b8119ced294ec"
+    },
+    {
+      "order": 5,
+      "repo": "pico-keys-sdk",
+      "patch": "patches/0005-sdk-measure-release-timeout-from-press.patch",
+      "target": "src/button.c",
+      "before_sha256": "abd88c636255772956634afbe0e7329e158308317e43617842e11b3bb0e20108",
+      "after_sha256": "e63a6d0f6b41d29f64ae34047798d5446838d241c25b91ee59c1739490f91b43",
+      "patch_sha256": "137371b3c0f7a5e56299367f71e469fce766e4edd01a3757df40832ad0605c9b"
+    }
+  ],
+  "build": {
+    "board": "waveshare_rp2040_zero",
+    "force_button_wait": true,
+    "enable_otp_app": false,
+    "enable_oath_app": true,
+    "build_type": "Release",
+    "artifact": "dist/pico_fido_zero-8.0-public-preview.uf2"
+  }
+}

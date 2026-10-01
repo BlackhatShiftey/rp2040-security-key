@@ -1,0 +1,86 @@
+diff --git a/src/usb/hid/hid.c b/src/usb/hid/hid.c
+index 734e977..8203ce5 100644
+--- a/src/usb/hid/hid.c
++++ b/src/usb/hid/hid.c
+@@ -354,6 +354,23 @@ uint16_t *get_send_buffer_size(uint8_t itf) {
+ int driver_process_usb_packet_hid(uint16_t read) {
+     int apdu_sent = 0;
+     if (read == HID_RPT_SIZE) {
++        CTAPHID_FRAME *candidate = (CTAPHID_FRAME *)
++            (hid_rx[ITF_HID_CTAP].buffer + hid_rx[ITF_HID_CTAP].r_ptr);
++        if (FRAME_TYPE(candidate) == TYPE_INIT && candidate->init.cmd == CTAPHID_CANCEL) {
++            uint32_t candidate_cid = candidate->cid;
++            bool cancel_active_cbor = is_busy() && thread_type == 2 &&
++                last_cmd == CTAPHID_CBOR && MSG_LEN(candidate) == 0 && candidate_cid != 0 &&
++                candidate_cid != CID_BROADCAST && candidate_cid == last_req.cid;
++            memcpy(candidate, &last_req, sizeof(*candidate));
++            hid_rx[ITF_HID_CTAP].r_ptr += HID_RPT_SIZE;
++            if (hid_rx[ITF_HID_CTAP].r_ptr >= hid_rx[ITF_HID_CTAP].w_ptr) {
++                hid_rx[ITF_HID_CTAP].r_ptr = hid_rx[ITF_HID_CTAP].w_ptr = 0;
++            }
++            if (cancel_active_cbor) {
++                cancel_button = true;
++            }
++            return 0;
++        }
+         driver_init_hid();
+ 
+         hid_rx[ITF_HID_CTAP].r_ptr += HID_RPT_SIZE;
+@@ -374,28 +391,6 @@ int driver_process_usb_packet_hid(uint16_t read) {
+             !(ctap_req->cid == CID_BROADCAST && ctap_req->init.cmd == CTAPHID_INIT)) {
+             return ctap_error(CTAP1_ERR_CHANNEL_BUSY);
+         }
+-        if (FRAME_TYPE(ctap_req) == TYPE_INIT && ctap_req->init.cmd == CTAPHID_CANCEL) {
+-            bool active_transaction = is_busy();
+-            msg_packet.len = msg_packet.current_len = 0;
+-            last_packet_time = 0;
+-            cancel_button = true;
+-            res_APDU_size = 0;
+-            hid_tx[ITF_HID_CTAP].r_ptr = hid_tx[ITF_HID_CTAP].w_ptr = 0;
+-            send_buffer_size[ITF_HID_CTAP] = 0;
+-            if (active_transaction && last_cmd == CTAPHID_CBOR) {
+-                finished_data_size = 0;
+-                apdu.sw = 0;
+-                apdu.rlen = 0;
+-                memset((uint8_t *)ctap_resp, 0, sizeof(CTAPHID_FRAME));
+-                ctap_resp->cid = ctap_req->cid;
+-                ctap_resp->init.cmd = CTAPHID_CBOR;
+-                ctap_resp->init.bcntl = 1;
+-                ctap_resp->init.data[0] = CTAPHID_KEEPALIVE_CANCEL_STATUS;
+-                hid_write(64);
+-                timeout_stop();
+-            }
+-            return 0;
+-        }
+         if (FRAME_TYPE(ctap_req) == TYPE_INIT) {
+             if (MSG_LEN(ctap_req) > CTAP_MAX_PACKET_SIZE) {
+                 return ctap_error(CTAP1_ERR_INVALID_LEN);
+@@ -576,7 +571,9 @@ int driver_process_usb_packet_hid(uint16_t read) {
+                 apdu_sent = cbor_process(last_cmd, msg_packet.data, msg_packet.len);
+             }
+             else {
+-                apdu_sent = cbor_process(last_cmd, ctap_req->init.data, MSG_LEN(ctap_req));
++                uint16_t request_len = MSG_LEN(ctap_req);
++                memcpy(msg_packet.data, ctap_req->init.data, request_len);
++                apdu_sent = cbor_process(last_cmd, msg_packet.data, request_len);
+             }
+             msg_packet.len = msg_packet.current_len = 0;
+             last_packet_time = 0;
+@@ -617,7 +614,7 @@ static void send_keepalive(void) {
+     }
+     CTAPHID_FRAME *resp = (CTAPHID_FRAME *) (hid_tx[ITF_HID_CTAP].buffer + sizeof(hid_tx[ITF_HID_CTAP].buffer) - 64);
+     //memset(ctap_resp, 0, sizeof(CTAPHID_FRAME));
+-    resp->cid = ctap_req->cid;
++    resp->cid = last_req.cid;
+     resp->init.cmd = CTAPHID_KEEPALIVE;
+     resp->init.bcntl = 1;
+     resp->init.data[0] = is_req_button_pending() ? 2 : 1;
+@@ -646,7 +643,7 @@ void driver_exec_finished_hid(uint16_t size_next) {
+ void driver_exec_finished_cont_hid(uint8_t itf, uint16_t size_next, uint16_t offset) {
+     offset -= 7;
+     ctap_resp = (CTAPHID_FRAME *) (hid_tx[itf].buffer + offset);
+-    ctap_resp->cid = ctap_req->cid;
++    ctap_resp->cid = last_req.cid;
+     ctap_resp->init.bcnth = size_next >> 8;
+     ctap_resp->init.bcntl = size_next & 0xff;
+     send_buffer_size[itf] = size_next;

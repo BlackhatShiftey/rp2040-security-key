@@ -1,0 +1,26 @@
+diff --git a/src/fido/cbor.c b/src/fido/cbor.c
+index 0a0a48c..d72403f 100644
+--- a/src/fido/cbor.c
++++ b/src/fido/cbor.c
+@@ -24,6 +24,7 @@
+ #include "fido.h"
+ #include "usb.h"
+ #include "apdu.h"
++#include "button.h"
+ #include "management.h"
+ #include "ctap2_cbor.h"
+ #include "version.h"
+@@ -114,7 +115,12 @@ void *cbor_thread(void *arg) {
+         const uint8_t *data = (const uint8_t *)cbor_data;
+         size_t len = cbor_len;
+         uint8_t cmd = cbor_cmd;
+-        apdu.sw = (uint16_t)cbor_parse(cmd, data, len);
++        uint16_t result = (uint16_t)cbor_parse(cmd, data, len);
++        if (cmd == CTAPHID_CBOR && cancel_button) {
++            res_APDU_size = 0;
++            result = CTAP2_ERR_KEEPALIVE_CANCEL;
++        }
++        apdu.sw = result;
+         if (apdu.sw == 0) {
+             DEBUG_DATA(res_APDU, res_APDU_size);
+         }

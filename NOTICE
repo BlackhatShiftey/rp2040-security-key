@@ -1,0 +1,27 @@
+Canticle RP2040 Security Key
+
+This project is a modified derivative of Pico FIDO by Pol Henarejos:
+https://github.com/polhenarejos/pico-fido
+
+Upstream Pico FIDO source files identify:
+Copyright (c) 2022 Pol Henarejos.
+
+Canticle Research contributors prepared the RP2040-Zero-specific patches,
+verification tools, build packaging, and documentation in this repository.
+The derivative was modified on 2026-09-28. It must not be represented as an
+unmodified upstream Pico FIDO release or as work created from scratch by
+Canticle Research.
+
+The repository is distributed under the GNU Affero General Public License,
+version 3. See LICENSE. Files originating in Pico FIDO and Pico Keys SDK retain
+their original copyright and license notices.
+
+Build-time dependencies include Raspberry Pi Pico SDK, TinyUSB, Mbed TLS,
+TinyCBOR, and other components fetched from their upstream projects. Those
+components remain governed by their respective licenses and notices. The
+bootstrap process keeps each dependency as a separate pinned source tree; do
+not remove or replace its license files when redistributing source or binaries.
+
+Modified areas include user-presence enforcement, cancellation lifecycle,
+button-release timing, deterministic source/bootstrap support, host-side
+qualification helpers, and RP2040-Zero build configuration.

@@ -1,0 +1,21 @@
+diff --git a/src/usb/usb.c b/src/usb/usb.c
+index c61a74d..7f45478 100644
+--- a/src/usb/usb.c
++++ b/src/usb/usb.c
+@@ -342,6 +342,7 @@ int card_status(uint8_t itf) {
+         //    printf("\n ------ M = %lu\n",m);
+         if (has_m) {
+             if (m == EV_EXEC_FINISHED) {
++                cancel_button = false;
+                 timeout_stop();
+                 if (led_get_mode() == MODE_PROCESSING) {
+                     led_set_mode(MODE_MOUNTED);
+@@ -350,7 +351,7 @@ int card_status(uint8_t itf) {
+             }
+ #ifndef ENABLE_EMULATION
+             else if (m == EV_PRESS_BUTTON) {
+-                int ret = button_wait();
++                int ret = cancel_button ? 2 : button_wait();
+                 uint32_t flag = EV_BUTTON_PRESSED;
+                 if (ret == 1) { //timeout
+                     flag = EV_BUTTON_TIMEOUT;

@@ -1,0 +1,21 @@
+diff --git a/src/button.c b/src/button.c
+index 9f8c59a..7a35c9c 100644
+--- a/src/button.c
++++ b/src/button.c
+@@ -143,6 +143,7 @@ int button_wait(void) {
+         }
+     }
+     if (!timeout) {
++        uint32_t release_start = board_millis();
+         while (button_pressed == true && cancel_button == false) {
+             execute_tasks();
+             uint32_t now = board_millis();
+@@ -151,7 +152,7 @@ int button_wait(void) {
+                 next_button_poll_ms = now + button_poll_interval_ms;
+             }
+             //sleep_ms(10);
+-            if (start_button + 15000 < now) { /* timeout */
++            if ((uint32_t)(now - release_start) >= 15000) { /* timeout */
+                 timeout = true;
+                 break;
+             }
